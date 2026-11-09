@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="referrer" content="no-referrer">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>WHOOP 本地授权回调</title>
+  <style>body{font:16px/1.7 system-ui,sans-serif;max-width:40rem;margin:4rem auto;padding:0 1.2rem;color:#203039}</style>
+</head>
+<body>
+  <h1>正在返回本机</h1>
+  <p id="status">如果没有自动跳转，请确认本机授权程序已启动，然后重新开始授权。</p>
+  <script>
+    (() => {
+      const input = new URLSearchParams(location.search);
+      const output = new URLSearchParams();
+      for (const key of ['code', 'state', 'error']) {
+        if (input.has(key)) output.set(key, input.get(key));
+      }
+      if (!output.has('state') || (!output.has('code') && !output.has('error'))) {
+        document.getElementById('status').textContent = '此页面仅用于 WHOOP 授权回调。请从本机程序开始授权。';
+        return;
+      }
+      location.replace('http://127.0.0.1:8765/whoop/callback?' + output.toString());
+    })();
+  </script>
+</body>
+</html>
